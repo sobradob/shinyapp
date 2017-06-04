@@ -7,6 +7,9 @@
 
 library(shiny)
 library(readr)
+library(ggplot2)
+library(ggmap)
+
 
 data<-read_csv("test.csv")
 
@@ -23,4 +26,16 @@ shinyServer(function(input, output) {
 
   })
 
+  output$locPlot<-renderPlot({
+    
+    # size should change dynamically later
+    map_blank <- get_map(location = c(median(data$lon),median(data$lat)), zoom = 8, color = "bw")
+    
+    ggmap(map_blank) + geom_point(data = data, aes(x = lon, y = lat), alpha = 0.5, color = "red") + 
+      theme(legend.position = "right") + 
+      labs(
+        x = "Longitude", 
+        y = "Latitude", 
+        title = "Location history data points")
+  })
 })

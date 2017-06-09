@@ -10,22 +10,43 @@ library(shiny)
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("Old Faithful Geyser Data"),
+  titlePanel("Location"),
 
   # Sidebar with a slider input for number of bins
   sidebarLayout(
     sidebarPanel(
-      sliderInput("bins",
-                  "Number of bins:",
-                  min = 1,
-                  max = 50,
-                  value = 30)
+      # Specification of range within an interval
+      dateRangeInput("daterange", "Date range:",
+                     start  = min(data$day.x),# change to day.x
+                     end    = max(data$day.x),
+                     min    = min(data$day.x),
+                     max    = max(data$day.x),
+                     format = "mm-dd-yy",
+                     separator = " - "),
+      checkboxGroupInput("activities", "Activities to show:",
+                         c("Still" = "still",
+                           "On Foot" = "onFoot",
+                           "Tilting" = "tilting",
+                           "On Bicycle" = "onBicycle",
+                           "In Vehicle" = "inVehicle",
+                           "Unknown" = "unknown",
+                           "Exiting Vehicle" = "exitingVehicle"),
+                         selected = c("still"))
     ),
 
+    # Pick example data
+    # upload data
+    # select activity
+    # Scatterplot TOD vs KM travelled and mode
+    # Barchart w total km travelled
+    
     # Show a plot of the generated distribution
     mainPanel(
-      plotOutput("distPlot"),
-      plotOutput("locPlot")
+      plotOutput("actPlot1"),
+      plotOutput("actPlot2"),
+      plotOutput("locPlot2"),
+      plotOutput("locPlot"),
+      textOutput("text1")
     )
   )
 ))

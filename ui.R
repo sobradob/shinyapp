@@ -6,47 +6,50 @@
 #
 
 library(shiny)
+library(shinydashboard)
 
-shinyUI(fluidPage(
+header <- dashboardHeader(title = "Android GPS Location")
 
-  # Application title
-  titlePanel("Location"),
-
-  # Sidebar with a slider input for number of bins
-  sidebarLayout(
-    sidebarPanel(
-      # Specification of range within an interval
-      dateRangeInput("daterange", "Date range:",
-                     start  = min(data$day.x),# change to day.x
-                     end    = max(data$day.x),
-                     min    = min(data$day.x),
-                     max    = max(data$day.x),
-                     format = "mm-dd-yy",
-                     separator = " - "),
-      checkboxGroupInput("activities", "Activities to show:",
-                         c("Still" = "still",
-                           "On Foot" = "onFoot",
-                           "Tilting" = "tilting",
-                           "On Bicycle" = "onBicycle",
-                           "In Vehicle" = "inVehicle",
-                           "Unknown" = "unknown",
-                           "Exiting Vehicle" = "exitingVehicle"),
-                         selected = c("still"))
-    ),
-
-    # Pick example data
-    # upload data
-    # select activity
-    # Scatterplot TOD vs KM travelled and mode
-    # Barchart w total km travelled
-    
-    # Show a plot of the generated distribution
-    mainPanel(
-      plotOutput("actPlot1"),
-      plotOutput("actPlot2"),
-      plotOutput("locPlot2"),
-      plotOutput("locPlot"),
-      textOutput("text1")
-    )
+sidebar <- dashboardSidebar(
+  sidebarMenu(id = "sidebar",
+    menuItem("Map", tabName = "map", icon = icon("map")),
+    menuItem("Descriptive Statistics", tabName = "descriptives", icon = icon("bar-chart")),
+    menuItem("Data Sets", tabName = "dataset", icon = icon("database")),
+    dateRangeInput("daterange", "Date range:",
+                            start  = min(as.Date(t$time)),
+                            end    = max(as.Date(t$time)),
+                            min    = min(as.Date(t$time)),
+                            max    = max(as.Date(t$time)),
+                            format = "mm-dd-yy",
+                            separator = " - "),
+    checkboxGroupInput("activities", "Activities to show:",
+                                c("Still" = "still",
+                                  "On Foot" = "onFoot",
+                                  "Tilting" = "tilting",
+                                  "On Bicycle" = "onBicycle",
+                                  "In Vehicle" = "inVehicle",
+                                  "Unknown" = "unknown",
+                                  "Exiting Vehicle" = "exitingVehicle"),
+                                selected = c("still")))
   )
-))
+
+
+body <- dashboardBody(
+  
+  tabItems(
+    tabItem(tabName = "map",
+            tags$style(type = "text/css", "#mapAct {height: calc(100vh - 80px) !important;}"),
+            leafletOutput("mapAct")
+            ),
+    tabItem(tabName = "descriptives",
+            h2("Descriptives")
+    ),
+    tabItem(tabName = "dataset",
+            h2("Data Set")
+    )
+    ))
+    
+
+dashboardPage(header, sidebar, body)
+
+
